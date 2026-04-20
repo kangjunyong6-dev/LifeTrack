@@ -87,15 +87,13 @@
                 android:background="#FFFFFF"
                 android:elevation="4dp"
                 android:orientation="vertical"
-                android:padding="24dp">
+                android:padding="16dp">
 
-                <TextView
-                    android:id="@+id/tvHistory"
+                <LinearLayout
+                    android:id="@+id/layoutHistoryContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Records will appear here"
-                    android:textSize="16sp"
-                    android:textColor="#222222" />
+                    android:orientation="vertical" />
             </LinearLayout>
 
         </LinearLayout>
