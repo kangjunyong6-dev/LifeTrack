@@ -11,11 +11,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LifeTrack">
-
+        <activity
+            android:name=".data.entity.HealthData"
+            android:exported="false" />
+        <activity
+            android:name=".data.entity.HealthScoreSystem"
+            android:exported="false" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".DailyRecordActivity" />
         <activity android:name=".RecordHistoryActivity" />
-
         <activity
             android:name=".MainActivity"
             android:exported="true">
