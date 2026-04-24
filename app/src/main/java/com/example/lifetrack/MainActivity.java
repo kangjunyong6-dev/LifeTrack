@@ -6,29 +6,45 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 public class MainActivity extends AppCompatActivity {
 
-    Button btnProfilePage, btnDailyRecordPage, btnHistoryPage;
+    BottomNavigationView bottomNav;
+    Button btnRecord, btnHistory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        btnProfilePage = findViewById(R.id.btnProfilePage);
-        btnDailyRecordPage = findViewById(R.id.btnDailyRecordPage);
-        btnHistoryPage = findViewById(R.id.btnHistoryPage);
+        bottomNav = findViewById(R.id.bottomNav);
+        btnRecord = findViewById(R.id.btnRecord);
+        btnHistory = findViewById(R.id.btnHistory);
 
-        btnProfilePage.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, ProfileActivity.class))
-        );
+        btnRecord.setOnClickListener(v ->
+                startActivity(new Intent(this, DailyRecordActivity.class)));
 
-        btnDailyRecordPage.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, DailyRecordActivity.class))
-        );
+        btnHistory.setOnClickListener(v ->
+                startActivity(new Intent(this, RecordHistoryActivity.class)));
 
-        btnHistoryPage.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, RecordHistoryActivity.class))
-        );
+        bottomNav.setOnItemSelectedListener(item -> {
+
+            int id = item.getItemId();
+
+            if (id == R.id.nav_home) return true;
+
+            if (id == R.id.nav_record) {
+                startActivity(new Intent(this, DailyRecordActivity.class));
+                return true;
+            }
+
+            if (id == R.id.nav_history) {
+                startActivity(new Intent(this, RecordHistoryActivity.class));
+                return true;
+            }
+
+            return false;
+        });
     }
 }
