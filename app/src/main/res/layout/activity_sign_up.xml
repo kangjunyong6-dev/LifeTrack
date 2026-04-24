@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center_horizontal"
         android:padding="32dp">
 
         <TextView
@@ -67,6 +66,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginBottom="12dp">
+
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -77,19 +77,22 @@
                     android:id="@+id/etSignUpAge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Age"
+                    android:hint="Age (5-100)"
                     android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 app:boxBackgroundColor="#FFFFFF">
-                <com.google.android.material.textfield.TextInputEditText
+                <AutoCompleteTextView
                     android:id="@+id/etSignUpGender"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Gender" />
+                    android:hint="Gender"
+                    android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
@@ -98,6 +101,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginBottom="24dp">
+
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -111,6 +115,7 @@
                     android:hint="Height (cm)"
                     android:inputType="numberDecimal" />
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -140,6 +145,7 @@
             android:layout_height="wrap_content"
             android:text="Already have an account? Login"
             android:textColor="#4299E1"
+            android:layout_gravity="center"
             android:textStyle="bold" />
     </LinearLayout>
 </ScrollView>

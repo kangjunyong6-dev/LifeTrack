@@ -160,7 +160,6 @@ public class ProfileActivity extends AppCompatActivity {
 
                         runOnUiThread(() -> {
                             Toast.makeText(this, "Profile Updated!", Toast.LENGTH_SHORT).show();
-                            // FIX: Switch back to view mode after saving
                             cardEditMode.setVisibility(View.GONE);
                             cardViewMode.setVisibility(View.VISIBLE);
                             loadUserProfile();
