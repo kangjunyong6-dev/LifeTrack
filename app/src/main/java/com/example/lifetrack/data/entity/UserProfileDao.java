@@ -7,13 +7,12 @@ import androidx.room.Update;
 
 @Dao
 public interface UserProfileDao {
-
     @Insert
     void insert(UserProfile userProfile);
 
     @Update
     void update(UserProfile userProfile);
 
-    @Query("SELECT * FROM user_profile LIMIT 1")
-    UserProfile getProfile();
+    @Query("SELECT * FROM user_profile WHERE email = :email LIMIT 1")
+    UserProfile getProfileByEmail(String email);
 }

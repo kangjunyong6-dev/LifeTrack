@@ -28,12 +28,21 @@
                 android:letterSpacing="-0.02" />
 
             <TextView
+                android:id="@+id/tvWelcome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hi, Guest"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#2D3748" />
+
+            <TextView
                 android:id="@+id/tvActiveProfile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:text="Welcome Back!"
+                android:textSize="14sp"
                 android:textColor="#718096"
-                android:lineSpacingExtra="4dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="32dp" />
 
@@ -43,46 +52,37 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="24dp"
                 app:cardElevation="4dp"
-                app:cardBackgroundColor="#FFFFFF"
                 android:layout_marginBottom="20dp"
                 android:foreground="?android:attr/selectableItemBackground">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:padding="24dp"
                     android:gravity="center_vertical">
-
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:src="@android:drawable/ic_menu_edit"
                         app:tint="#4299E1"
-                        android:background="@drawable/bg_icon_circle"
                         android:padding="12dp"
                         android:layout_marginEnd="20dp"/>
-
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Daily Check-in"
                             android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:textColor="#2D3748" />
-
+                            android:textStyle="bold" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Log your sleep, diet, and exercise."
-                            android:textSize="14sp"
-                            android:textColor="#718096" />
+                            android:text="Log your sleep and exercise."
+                            android:textSize="14sp" />
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -94,58 +94,27 @@
                 app:cardCornerRadius="24dp"
                 app:cardElevation="4dp"
                 app:cardBackgroundColor="#4299E1"
-                android:layout_marginBottom="32dp"
                 android:foreground="?android:attr/selectableItemBackground">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="24dp">
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="AI Health Analysis"
                         android:textSize="20sp"
                         android:textStyle="bold"
-                        android:textColor="#FFFFFF"
-                        android:layout_marginBottom="8dp" />
-
+                        android:textColor="#FFFFFF" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Process your latest data to generate your wellness score and trend reports."
-                        android:textSize="14sp"
+                        android:text="Generate your wellness score."
                         android:textColor="#E2E8F0"
-                        android:lineSpacingExtra="4dp"
-                        android:layout_marginBottom="20dp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="GENERATE REPORT →"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:textColor="#FFFFFF"
-                        android:letterSpacing="0.1" />
+                        android:layout_marginTop="8dp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="RECENT SUMMARY"
-                android:textSize="12sp"
-                android:textColor="#A0AEC0"
-                android:textStyle="bold"
-                android:letterSpacing="0.1"
-                android:layout_marginBottom="16dp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:background="@drawable/bg_dashed_border" />
 
         </LinearLayout>
     </ScrollView>
@@ -156,70 +125,18 @@
         android:layout_height="65dp"
         android:layout_alignParentBottom="true"
         android:background="#FFFFFF"
-        android:orientation="horizontal"
         android:elevation="12dp">
-
-        <LinearLayout
-            android:id="@+id/navHome"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@android:drawable/ic_menu_view"
-                app:tint="#4299E1" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Home"
-                android:textSize="12sp"
-                android:textColor="#4299E1"
-                android:textStyle="bold" />
+        <LinearLayout android:id="@+id/navHome" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_view" app:tint="#4299E1" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Home" android:textColor="#4299E1" android:textStyle="bold" />
         </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/navCalendar"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:background="?android:attr/selectableItemBackground">
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@android:drawable/ic_menu_today"
-                app:tint="#A0AEC0" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Calendar"
-                android:textSize="12sp"
-                android:textColor="#A0AEC0" />
+        <LinearLayout android:id="@+id/navCalendar" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_today" app:tint="#A0AEC0" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Calendar" android:textColor="#A0AEC0" />
         </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/navProfile"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:background="?android:attr/selectableItemBackground">
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@android:drawable/ic_menu_myplaces"
-                app:tint="#A0AEC0" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Profile"
-                android:textSize="12sp"
-                android:textColor="#A0AEC0" />
+        <LinearLayout android:id="@+id/navProfile" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_myplaces" app:tint="#A0AEC0" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Profile" android:textColor="#A0AEC0" />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>
