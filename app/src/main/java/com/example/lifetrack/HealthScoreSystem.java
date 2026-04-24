@@ -33,7 +33,6 @@ public class HealthScoreSystem extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Stabilize UI
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.parseColor("#F4F7FC"));
@@ -71,88 +70,69 @@ public class HealthScoreSystem extends AppCompatActivity {
     }
 
     private void setupNavigation() {
-        navHome.setOnClickListener(v -> {
-            startActivity(new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-            finish();
-        });
-        navCalendar.setOnClickListener(v -> {
-            startActivity(new Intent(this, RecordHistoryActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-            finish();
-        });
-        navProfile.setOnClickListener(v -> {
-            startActivity(new Intent(this, ProfileActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-            finish();
-        });
+        navHome.setOnClickListener(v -> navigateTo(MainActivity.class));
+        navCalendar.setOnClickListener(v -> navigateTo(RecordHistoryActivity.class));
+        navProfile.setOnClickListener(v -> navigateTo(ProfileActivity.class));
     }
 
     private void triggerSmartAnalysis() {
-        tvStatus.setText("Analyzing...");
-        tvAdvice.setText("Processing health metrics...");
+        tvStatus.setText("Syncing...");
+        tvAdvice.setText("Connecting to Supabase Cloud...");
         btnAnalyze.setEnabled(false);
 
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
+                // Get the latest local record
                 List<DailyHealthRecord> records = db.dailyHealthRecordDao().getAllRecords();
-
                 if (records == null || records.isEmpty()) {
                     runOnUiThread(() -> {
                         btnAnalyze.setEnabled(true);
                         tvStatus.setText("No Data");
-                        tvAdvice.setText("Please add a daily record first.");
+                        tvAdvice.setText("Please record your health data first.");
                     });
                     return;
                 }
-
-                // Get newest record
                 DailyHealthRecord latest = records.get(0);
 
+                // Analyze using Supabase Function
                 apiRepository.getHealthAssessment(latest, new HealthRepository.ApiCallback() {
                     @Override
                     public void onSuccess(HealthAssessmentResponse result) {
                         runOnUiThread(() -> {
-                            try {
-                                if (result != null && !isFinishing()) {
-                                    updateResultUI(result.getHealthScore(), result.getClassification(), result.getTrendAnalysis());
-                                } else {
-                                    handleFallback(latest);
-                                }
-                            } catch (Exception e) {
-                                // Catch missing API data crashes
-                                handleFallback(latest);
+                            if (result != null && !isFinishing()) {
+                                updateResultUI(result.getHealthScore(), result.getClassification(), result.getTrendAnalysis());
+                            } else {
+                                handleFallback(latest, "Success but empty response.");
                             }
                         });
                     }
 
                     @Override
                     public void onError(String error) {
-                        runOnUiThread(() -> handleFallback(latest));
+                        runOnUiThread(() -> handleFallback(latest, "Cloud unreachable: " + error));
                     }
                 });
             } catch (Exception e) {
                 runOnUiThread(() -> {
                     btnAnalyze.setEnabled(true);
-                    tvStatus.setText("System Error");
-                    Toast.makeText(this, "Internal process failed.", Toast.LENGTH_SHORT).show();
+                    tvStatus.setText("Local Error");
                 });
             }
         });
     }
 
-    private void handleFallback(DailyHealthRecord record) {
+    private void handleFallback(DailyHealthRecord record, String reason) {
         if (isFinishing()) return;
-        int localScore = calculateLocalFallback(record);
-        updateResultUI(localScore, "Moderate", "Connection timeout. Showing offline analysis based on your activity.");
+        int score = calculateLocalFallback(record);
+        updateResultUI(score, "Moderate (Offline)", "Showing local assessment. Reason: " + reason);
+        Toast.makeText(this, "Operating in Offline Mode", Toast.LENGTH_SHORT).show();
     }
 
     private void updateResultUI(int score, String status, String advice) {
-        if (isFinishing()) return;
-
         btnAnalyze.setEnabled(true);
         tvScore.setText(String.valueOf(score));
-
-        // Prevent crashes if the server sends empty text
-        tvStatus.setText(status != null ? status : "Analyzed");
-        tvAdvice.setText(advice != null ? advice : "Keep up the good work.");
+        tvStatus.setText(status);
+        tvAdvice.setText(advice);
 
         if (score >= 80) tvStatus.setTextColor(Color.parseColor("#38A169"));
         else if (score >= 50) tvStatus.setTextColor(Color.parseColor("#D69E2E"));
@@ -161,14 +141,12 @@ public class HealthScoreSystem extends AppCompatActivity {
 
     private int calculateLocalFallback(DailyHealthRecord record) {
         float score = (record.getSleepHours() * 7) + (record.getExerciseMinutes() / 2.5f);
-
-        // THE FIX: We use FoodNote instead of CalorieIntake because CalorieIntake is empty!
-        if (record.getFoodNote() != null && record.getFoodNote().equalsIgnoreCase("Healthy")) {
-            score += 15;
-        } else if (record.getFoodNote() != null && record.getFoodNote().equalsIgnoreCase("Normal")) {
-            score += 5;
-        }
-
+        if ("Healthy".equalsIgnoreCase(record.getFoodNote())) score += 15;
         return (int) Math.min(score, 100);
+    }
+
+    private void navigateTo(Class<?> target) {
+        startActivity(new Intent(this, target).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+        finish();
     }
 }
