@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    // FIX: Added etSignUpName here
+    // 1. DECLARE the variable here
     private TextInputEditText etSignUpName, etSignUpEmail, etSignUpPassword, etSignUpAge, etSignUpGender, etSignUpHeight, etSignUpWeight;
     private Button btnRegister;
     private AppDatabase db;
@@ -25,7 +25,6 @@ public class SignUpActivity extends AppCompatActivity {
 
         db = AppDatabase.getInstance(this);
 
-        // FIX: Linked etSignUpName here
         etSignUpName = findViewById(R.id.etSignUpName);
         etSignUpEmail = findViewById(R.id.etSignUpEmail);
         etSignUpPassword = findViewById(R.id.etSignUpPassword);
@@ -41,6 +40,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void performRegistration() {
+        // 3. NOW you can use etSignUpName without an error
         String name = etSignUpName.getText().toString().trim();
         String email = etSignUpEmail.getText().toString().trim();
         String pass = etSignUpPassword.getText().toString().trim();
@@ -65,6 +65,7 @@ public class SignUpActivity extends AppCompatActivity {
                     return;
                 }
 
+                // Save the new profile including the Name
                 UserProfile newUser = new UserProfile(name, email, pass, age, gender, height, weight);
                 db.userProfileDao().insert(newUser);
 

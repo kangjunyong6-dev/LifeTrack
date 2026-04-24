@@ -10,30 +10,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center"
+        android:gravity="center_horizontal"
         android:padding="32dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Create Account"
-            android:textSize="32sp"
+            android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="#1A202C"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Set up your health profile."
-            android:textSize="14sp"
-            android:textColor="#718096"
-            android:layout_marginBottom="32dp" />
+            android:layout_marginBottom="24dp" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="12dp"
+            app:boxBackgroundColor="#FFFFFF">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSignUpName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Full Name"
+                android:inputType="textPersonName" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
             app:boxBackgroundColor="#FFFFFF">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etSignUpEmail"
@@ -46,14 +51,14 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="12dp"
             app:passwordToggleEnabled="true"
             app:boxBackgroundColor="#FFFFFF">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etSignUpPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Create Password"
+                android:hint="Password"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -61,8 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
-
+            android:layout_marginBottom="12dp">
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -76,7 +80,6 @@
                     android:hint="Age"
                     android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
-
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -94,8 +97,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="32dp">
-
+            android:layout_marginBottom="24dp">
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -109,7 +111,6 @@
                     android:hint="Height (cm)"
                     android:inputType="numberDecimal" />
             </com.google.android.material.textfield.TextInputLayout>
-
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -127,12 +128,10 @@
         <Button
             android:id="@+id/btnRegister"
             android:layout_width="match_parent"
-            android:layout_height="65dp"
+            android:layout_height="60dp"
             android:text="Sign Up"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
             app:backgroundTint="#4299E1"
-            app:cornerRadius="32dp"
+            app:cornerRadius="12dp"
             android:layout_marginBottom="16dp" />
 
         <TextView
@@ -142,6 +141,5 @@
             android:text="Already have an account? Login"
             android:textColor="#4299E1"
             android:textStyle="bold" />
-
     </LinearLayout>
 </ScrollView>
