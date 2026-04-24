@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
         String name = prefs.getString("name", "User");
 
-        String greeting = "Hi " + name + ", welcome back.\nReady for your daily review?";
+        String greeting = "Hi " + name + ", Welcome Back!\nReady for your daily review?";
 
         tvWelcomeUser.setText(greeting);
     }

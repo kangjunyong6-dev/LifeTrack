@@ -216,6 +216,20 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <Button
+                android:id="@+id/btnBackToDashboard"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="32dp"
+                android:text="Return to Dashboard"
+                android:textAllCaps="false"
+                android:textColor="#718096"
+                android:background="@android:color/transparent"
+                app:strokeColor="#CBD5E0"
+                app:strokeWidth="1dp"
+                app:cornerRadius="32dp" />
+
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

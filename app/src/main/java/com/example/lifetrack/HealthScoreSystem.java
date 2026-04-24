@@ -42,6 +42,7 @@ public class HealthScoreSystem extends AppCompatActivity {
         tvReportTitle = findViewById(R.id.tvReportTitle);
         apiRepository = new HealthRepository();
         db = AppDatabase.getInstance(this);
+        Button btnBackToDashboard = findViewById(R.id.btnBackToDashboard);
 
         // Footer Navigation Logic
         LinearLayout navHome = findViewById(R.id.navHome);
@@ -67,6 +68,13 @@ public class HealthScoreSystem extends AppCompatActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
+        });
+
+        btnBackToDashboard.setOnClickListener(v -> {
+            Intent intent = new Intent(HealthScoreSystem.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish(); // Closes
         });
 
         btnAnalyze.setOnClickListener(v -> triggerSmartAnalysis());
