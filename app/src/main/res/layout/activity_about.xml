@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F4F7FC"
+    android:fitsSystemWindows="true">
+
+    <ImageButton
+        android:id="@+id/btnBackAbout"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@android:drawable/ic_menu_revert"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:layout_margin="16dp"
+        app:tint="#2D3748" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="32dp"
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@android:drawable/ic_menu_mylocation"
+                app:tint="#4299E1"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="LifeTrack"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#1A202C"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Your Intelligent Health Partner"
+                android:textSize="16sp"
+                android:textColor="#4299E1"
+                android:gravity="center"
+                android:layout_marginBottom="32dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="LifeTrack was developed to solve the difficulty of tracking wellness in a busy lifestyle. Our goal is to transform complex physiological data into simple, actionable insights using modern AI integration.\n\nOur system uses secure data handling and real-time cloud synchronization to ensure your health journey is always at your fingertips."
+                android:textSize="15sp"
+                android:textColor="#4A5568"
+                android:lineSpacingExtra="6dp"
+                android:gravity="center"
+                android:layout_marginBottom="40dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="© 2026 LifeTrack Development Team"
+                android:textSize="12sp"
+                android:textColor="#A0AEC0"/>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
