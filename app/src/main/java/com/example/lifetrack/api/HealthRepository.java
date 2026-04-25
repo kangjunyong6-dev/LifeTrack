@@ -66,7 +66,7 @@ public class HealthRepository {
         });
     }
 
-   
+
     public void fetchLatestAssessmentOnly(final ApiCallback callback) {
         apiService.getLatestAssessment().enqueue(new Callback<List<HealthAssessmentResponse>>() {
             @Override
@@ -74,9 +74,13 @@ public class HealthRepository {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     callback.onSuccess(response.body().get(0), "CLOUD AI ANALYSIS");
                 } else {
-                    // Fallback if the Supabase table is completely empty (new user)
+                    // Update this to 5 arguments as well
                     HealthAssessmentResponse empty = new HealthAssessmentResponse(
-                            "Today", 0, "No Data", "Check-in to get your first Cloud AI Analysis."
+                            "Today",
+                            0,
+                            "No Data",
+                            "Check-in to get your first Cloud AI Analysis.",
+                            "No recommendations yet."
                     );
                     callback.onSuccess(empty, "No Data");
                 }
@@ -104,11 +108,15 @@ public class HealthRepository {
         score = Math.max(0, Math.min(score, 100));
 
         String status = (score >= 80) ? "Healthy" : (score >= 50) ? "Moderate" : "Unhealthy";
-        String prediction = "Local Analysis: Your " + record.getExerciseMinutes() +
-                "min activity suggests an improving cardiopulmonary trend.";
+        String prediction = "Local Analysis: Your activity suggests an improving trend.";
+        String localRec = "Sync to cloud for detailed AI recommendations.";
 
         HealthAssessmentResponse fallback = new HealthAssessmentResponse(
-                record.getDate(), score, status, prediction
+                record.getDate(),
+                score,
+                status,
+                prediction,
+                localRec
         );
 
         callback.onSuccess(fallback, sourceLabel);

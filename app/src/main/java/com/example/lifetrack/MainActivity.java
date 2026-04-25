@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private AppDatabase db;
     private LineChart homeChart;
 
-    // NEW: Add the HealthRepository to fetch Cloud data
+    //  Add the HealthRepository to fetch Cloud data
     private HealthRepository healthRepository;
 
     @Override
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadUserGreeting();
-        loadHealthScore(); // This now fetches from the Cloud!
+        loadHealthScore();
         loadHomeChart();
         loadPrediction();
     }
@@ -145,9 +145,11 @@ public class MainActivity extends AppCompatActivity {
                             int cloudScore = assessment.getHealthScore();
                             tvScore.setText(String.valueOf(cloudScore));
                             tvStatus.setText("● " + assessment.getClassification());
-                            tvAdvice.setText("Cloud AI: " + assessment.getTrendAnalysis());
 
-                            // Apply styling based on cloud score
+                            //  Combine both Trend and Recommendation with a line break
+                            String fullAdvice = assessment.getTrendAnalysis() + "\n\n💡 Tip: " + assessment.getRecommendation();
+                            tvAdvice.setText(fullAdvice);
+
                             updateScoreCardStyling(cardScore, tvScore, tvStatus, tvAdvice, cloudScore);
                         });
                     }
@@ -172,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // Helper method to keep your UI updates clean
+    // Helper method to keep UI updates clean
     private void updateScoreCardStyling(MaterialCardView cardScore, TextView tvScore, TextView tvStatus, TextView tvAdvice, int score) {
         tvStatus.setTextColor(Color.WHITE);
         tvScore.setTextColor(Color.WHITE);

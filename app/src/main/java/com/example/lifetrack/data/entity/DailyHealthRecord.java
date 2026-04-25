@@ -16,17 +16,22 @@ public class DailyHealthRecord {
     private float sleepHours;
     private String foodNote;
 
+
+    private float weight;
+    private float height;
+
     // Kept for your local offline calculation
     private int calorieIntake;
 
-    // This constructor exactly matches what your teammate wrote in DailyRecordActivity.java
-    public DailyHealthRecord(String date, int exerciseMinutes, String exerciseIntensity, int calories,float sleepHours, String foodNote) {
+    public DailyHealthRecord(String date, int exerciseMinutes, String exerciseIntensity, int calories, float sleepHours, String foodNote, float weight, float height) {
         this.date = date;
         this.exerciseMinutes = exerciseMinutes;
         this.exerciseIntensity = exerciseIntensity;
         this.calories = calories;
         this.sleepHours = sleepHours;
         this.foodNote = foodNote;
+        this.weight = weight;
+        this.height = height;
 
         // Default calorie intake so your local math fallback doesn't break
         this.calorieIntake = 2000;
@@ -88,6 +93,22 @@ public class DailyHealthRecord {
 
     public int getCalories() {
         return calories;
+    }
+
+    public float getWeight() {
+        return weight;
+    }
+
+    public void setWeight(float weight) {
+        this.weight = weight;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
     }
 
     public int calculateLocalScore() {

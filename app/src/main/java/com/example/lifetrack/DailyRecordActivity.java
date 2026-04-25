@@ -84,7 +84,6 @@ public class DailyRecordActivity extends AppCompatActivity {
             return;
         }
 
-        // Variables made final so they can be accessed inside the lambda
         final int exerciseMinutes = Integer.parseInt(exerciseStr);
         final float sleepHours = sleepStr.isEmpty() ? 0.0f : Float.parseFloat(sleepStr);
 
@@ -94,30 +93,43 @@ public class DailyRecordActivity extends AppCompatActivity {
             else if (rbUnhealthy.isChecked()) foodTypeTemp = "Unhealthy";
         }
         final String foodType = foodTypeTemp;
-
         final String todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
         Executors.newSingleThreadExecutor().execute(() -> {
             SharedPreferences prefs = getSharedPreferences("LifeTrackPrefs", MODE_PRIVATE);
             String userEmail = prefs.getString("loggedInEmail", null);
+
+            // Default values in case the profile isn't found
             float userWeight = 70.0f;
+            float userHeight = 170.0f;
 
             if (userEmail != null) {
                 UserProfile profile = db.userProfileDao().getProfileByEmail(userEmail);
-                if (profile != null && profile.getWeight() > 0) {
-                    userWeight = profile.getWeight();
+                if (profile != null) {
+                    // Get the real data from the user's profile
+                    if (profile.getWeight() > 0) userWeight = profile.getWeight();
+                    // Ensure your UserProfile entity has a getHeight() method!
+                    if (profile.getHeight() > 0) userHeight = profile.getHeight();
                 }
             }
 
+            // Calorie Calculation Logic
             float metValue = 3.0f;
             if (intensity.equalsIgnoreCase("Medium")) metValue = 5.0f;
             else if (intensity.equalsIgnoreCase("High")) metValue = 8.0f;
 
-            // Result made final to fix the compilation error
             final int finalCalculatedCalories = Math.round(exerciseMinutes * (metValue * 3.5f * userWeight) / 200f);
 
+            // Passing all 8 required arguments to match DailyHealthRecord
             DailyHealthRecord record = new DailyHealthRecord(
-                    todayDate, exerciseMinutes, intensity, finalCalculatedCalories, sleepHours, foodType
+                    todayDate,
+                    exerciseMinutes,
+                    intensity,
+                    finalCalculatedCalories,
+                    sleepHours,
+                    foodType,
+                    userWeight, // New Argument 7
+                    userHeight  // New Argument 8
             );
 
             db.dailyHealthRecordDao().insert(record);

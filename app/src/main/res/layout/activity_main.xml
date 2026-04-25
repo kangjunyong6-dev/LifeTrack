@@ -52,7 +52,7 @@
                         android:id="@+id/tvActiveProfile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Ready to conquer the day?"
+                        android:text="Built by your efforts, tracked by your goals.?"
                         android:textSize="14sp"
                         android:textColor="#718096"
                         android:layout_marginTop="4dp" />
