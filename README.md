@@ -1,9 +1,5 @@
-# LifeTrack
+# LifeTrack APP
 
-Mobile App Assignment - Module 2
+Mobile Application Development - Assignment 2
 
-Features:
-- User profile input
-- Room database storage
-- Update existing data (no duplicate)
-- Persistent data loading
+
