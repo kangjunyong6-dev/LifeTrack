@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
                             int localScore = calculateScore(latest);
                             tvScore.setText(String.valueOf(localScore));
                             tvStatus.setText("● " + getStatus(localScore));
-                            tvAdvice.setText("Local Advice: " + generateAdvice(latest, localScore));
+                            tvAdvice.setText("Advice (OFFLINE): " + generateAdvice(latest, localScore));
 
                             // Apply styling based on local score
                             updateScoreCardStyling(cardScore, tvScore, tvStatus, tvAdvice, localScore);
