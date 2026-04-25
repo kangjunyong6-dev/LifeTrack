@@ -3,17 +3,19 @@ package com.example.lifetrack;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 
+import com.example.lifetrack.api.HealthAssessmentResponse;
+import com.example.lifetrack.api.HealthRepository;
 import com.example.lifetrack.data.entity.AppDatabase;
 import com.example.lifetrack.data.entity.DailyHealthRecord;
 import com.example.lifetrack.data.entity.UserProfile;
@@ -35,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
     private AppDatabase db;
     private LineChart homeChart;
 
+    // NEW: Add the HealthRepository to fetch Cloud data
+    private HealthRepository healthRepository;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
         db = AppDatabase.getInstance(this);
         homeChart = findViewById(R.id.homeChart);
         tvPrediction = findViewById(R.id.tvPrediction);
+
+        // Initialize the repository
+        healthRepository = new HealthRepository();
 
         initializeViews();
         setupClickListeners();
@@ -75,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadUserGreeting();
-        loadHealthScore();
+        loadHealthScore(); // This now fetches from the Cloud!
         loadHomeChart();
         loadPrediction();
     }
@@ -98,22 +106,24 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadHealthScore() {
         Executors.newSingleThreadExecutor().execute(() -> {
+            // 1. Fetch the latest local record to display raw stats (sleep hours, calories)
             DailyHealthRecord latest = db.dailyHealthRecordDao().getLatestRecord();
 
-            MaterialCardView cardScore = findViewById(R.id.cardHealthScore);
-            TextView tvScore = findViewById(R.id.tvScore);
-            TextView tvStatus = findViewById(R.id.tvStatus);
-            TextView tvAdvice = findViewById(R.id.tvAdvice);
-            TextView tvStatSleep = findViewById(R.id.tvStatSleep);
-            TextView tvStatCalories = findViewById(R.id.tvStatCalories);
-
             runOnUiThread(() -> {
+                MaterialCardView cardScore = findViewById(R.id.cardHealthScore);
+                TextView tvScore = findViewById(R.id.tvScore);
+                TextView tvStatus = findViewById(R.id.tvStatus);
+                TextView tvAdvice = findViewById(R.id.tvAdvice);
+                TextView tvStatSleep = findViewById(R.id.tvStatSleep);
+                TextView tvStatCalories = findViewById(R.id.tvStatCalories);
                 MaterialCardView cardInsights = findViewById(R.id.cardInsights);
+
                 if (cardInsights != null) {
                     cardInsights.setAlpha(0f);
                     cardInsights.animate().alpha(1f).setDuration(500).start();
                 }
 
+                // If no local data exists, show empty state
                 if (latest == null) {
                     tvScore.setText("--");
                     tvStatus.setText("No Data");
@@ -123,36 +133,65 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
+                // Update the raw local stats (since the Cloud Assessment only returns the score/status)
                 tvStatSleep.setText(latest.getSleepHours() + " h");
                 tvStatCalories.setText(latest.getCalories() + " kcal");
 
-                int score = calculateScore(latest);
-                String status = getStatus(score);
-                String advice = generateAdvice(latest, score);
+                // 2. Fetch the OFFICIAL Cloud Score from Supabase
+                healthRepository.fetchLatestAssessmentOnly(new HealthRepository.ApiCallback() {
+                    @Override
+                    public void onSuccess(HealthAssessmentResponse assessment, String source) {
+                        runOnUiThread(() -> {
+                            int cloudScore = assessment.getHealthScore();
+                            tvScore.setText(String.valueOf(cloudScore));
+                            tvStatus.setText("● " + assessment.getClassification());
+                            tvAdvice.setText("Cloud AI: " + assessment.getTrendAnalysis());
 
-                tvScore.setText(String.valueOf(score));
-                tvStatus.setText("● " + status);
-                tvAdvice.setText("Advice: " + advice);
+                            // Apply styling based on cloud score
+                            updateScoreCardStyling(cardScore, tvScore, tvStatus, tvAdvice, cloudScore);
+                        });
+                    }
 
-                tvStatus.setTextColor(Color.WHITE);
-                tvScore.setTextColor(Color.WHITE);
-                tvAdvice.setTextColor(Color.parseColor("#E2E8F0"));
+                    @Override
+                    public void onError(String errorMessage) {
+                        runOnUiThread(() -> {
+                            Toast.makeText(MainActivity.this, "Cloud Sync Failed. Showing Local Score.", Toast.LENGTH_SHORT).show();
 
-                if (score >= 80) {
-                    cardScore.setCardBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.secondary));
-                } else if (score >= 50) {
-                    cardScore.setCardBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.warning));
-                } else {
-                    cardScore.setCardBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.danger));
-                }
+                            // 3. Fallback to Local Brain if Cloud is unreachable (Offline mode)
+                            int localScore = calculateScore(latest);
+                            tvScore.setText(String.valueOf(localScore));
+                            tvStatus.setText("● " + getStatus(localScore));
+                            tvAdvice.setText("Local Advice: " + generateAdvice(latest, localScore));
 
-                tvScore.setScaleX(0.8f);
-                tvScore.setScaleY(0.8f);
-                tvScore.animate().scaleX(1f).scaleY(1f).setDuration(300).start();
+                            // Apply styling based on local score
+                            updateScoreCardStyling(cardScore, tvScore, tvStatus, tvAdvice, localScore);
+                        });
+                    }
+                });
             });
         });
     }
 
+    // Helper method to keep your UI updates clean
+    private void updateScoreCardStyling(MaterialCardView cardScore, TextView tvScore, TextView tvStatus, TextView tvAdvice, int score) {
+        tvStatus.setTextColor(Color.WHITE);
+        tvScore.setTextColor(Color.WHITE);
+        tvAdvice.setTextColor(Color.parseColor("#E2E8F0"));
+
+        if (score >= 80) {
+            cardScore.setCardBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.secondary));
+        } else if (score >= 50) {
+            cardScore.setCardBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.warning));
+        } else {
+            cardScore.setCardBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.danger));
+        }
+
+        tvScore.setScaleX(0.8f);
+        tvScore.setScaleY(0.8f);
+        tvScore.animate().scaleX(1f).scaleY(1f).setDuration(300).start();
+    }
+
+    // Kept for offline fallback and for generating the Home Chart
     private int calculateScore(DailyHealthRecord r) {
         int score = 50;
         if (r.getSleepHours() >= 7) score += 20;
@@ -185,6 +224,7 @@ public class MainActivity extends AppCompatActivity {
         return advice.toString();
     }
 
+    // Chart still uses local DB to avoid making 7 API calls at once
     private void loadHomeChart() {
         Executors.newSingleThreadExecutor().execute(() -> {
             List<DailyHealthRecord> records = db.dailyHealthRecordDao().getLast7Records();
