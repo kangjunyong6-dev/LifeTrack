@@ -7,7 +7,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
 
-    private static final String BASE_URL = "https://annfohikwzjftxpxxedc.supabase.co";
+    // FIX: Added the mandatory trailing slash (/) at the end of the URL
+    private static final String BASE_URL = "https://annfohikwzjftxpxxedc.supabase.co/";
 
     private static final String SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFubmZvaGlrd3pqZnR4cHh4ZWRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MDM5MzQsImV4cCI6MjA5MTk3OTkzNH0._r9kaysnx1Sw6p_OdBH6ADr2CnYvT9PMWts-Bn098p0";
 
@@ -15,7 +16,7 @@ public class ApiClient {
 
     public static Retrofit getClient() {
         if (retrofit == null) {
-            // Add headers required by Supabase [citation:6]
+            // Add headers required by Supabase
             OkHttpClient client = new OkHttpClient.Builder()
                     .addInterceptor(chain -> {
                         Request request = chain.request().newBuilder()

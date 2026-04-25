@@ -30,8 +30,14 @@ public class HealthRepository {
         apiService.sendHealthData(request).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                // 3. SECOND: After saving, fetch the assessment result
-                fetchLatestResult(callback);
+                // FIX: Check if Supabase successfully received the data (HTTP 200-299)
+                if (response.isSuccessful()) {
+                    // 3. SECOND: After saving successfully, fetch the assessment result
+                    fetchLatestResult(callback);
+                } else {
+                    // Pass the exact HTTP error code to the UI if it fails
+                    callback.onError("Upload rejected. Code: " + response.code());
+                }
             }
 
             @Override
@@ -42,7 +48,7 @@ public class HealthRepository {
     }
 
     private void fetchLatestResult(final ApiCallback callback) {
-        // This calls the GET method we fixed in ApiService
+        // This calls the GET method in ApiService
         apiService.getLatestAssessment().enqueue(new Callback<List<HealthAssessmentResponse>>() {
             @Override
             public void onResponse(Call<List<HealthAssessmentResponse>> call, Response<List<HealthAssessmentResponse>> response) {
