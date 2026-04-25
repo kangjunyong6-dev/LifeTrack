@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#4F46E5</color>       <!-- Indigo -->
-    <color name="secondary">#22C55E</color>     <!-- Green -->
-    <color name="warning">#F59E0B</color>       <!-- Yellow -->
-    <color name="danger">#EF4444</color>        <!-- Red -->
+    <color name="primary">#4299E1</color>       <!-- Indigo -->
+    <color name="secondary">#48BB78</color>     <!-- Green -->
+    <color name="warning">#ED8936</color>       <!-- Yellow -->
+    <color name="danger">#E53E3E</color>        <!-- Red -->
 
     <color name="bg">#F8FAFC</color>            <!-- Light background -->
     <color name="card">#FFFFFF</color>
-    <color name="textPrimary">#1E293B</color>
+    <color name="textPrimary">#1A202C</color>
     <color name="textSecondary">#64748B</color>
 </resources>
+

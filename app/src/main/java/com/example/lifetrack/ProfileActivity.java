@@ -20,7 +20,7 @@ import java.util.concurrent.Executors;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private TextView tvViewDetails;
+    private TextView tvUserName, tvUserGender, tvUserAge, tvUserHeight, tvUserWeight;
     private EditText etName, etAge, etGender, etHeight, etWeight;
     private Button btnEnableEdit, btnSaveProfile, btnLogout;
     private CardView cardViewMode, cardEditMode;
@@ -40,22 +40,17 @@ public class ProfileActivity extends AppCompatActivity {
         setupNavigation();
         loadUserProfile();
 
-        // Toggle Edit Mode
         btnEnableEdit.setOnClickListener(v -> {
             cardViewMode.setVisibility(View.GONE);
             cardEditMode.setVisibility(View.VISIBLE);
         });
 
-        // Save Data
         btnSaveProfile.setOnClickListener(v -> updateProfile());
 
-        // LOGOUT LOGIC
         btnLogout.setOnClickListener(v -> {
             SharedPreferences prefs = getSharedPreferences("LifeTrackPrefs", MODE_PRIVATE);
             prefs.edit().putBoolean("isLoggedIn", false).apply();
-
             Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
-
             Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
@@ -64,7 +59,12 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        tvViewDetails = findViewById(R.id.tvViewDetails);
+        tvUserName = findViewById(R.id.tvUserName);
+        tvUserGender = findViewById(R.id.tvUserGender);
+        tvUserAge = findViewById(R.id.tvUserAge);
+        tvUserHeight = findViewById(R.id.tvUserHeight);
+        tvUserWeight = findViewById(R.id.tvUserWeight);
+
         etName = findViewById(R.id.etName);
         etAge = findViewById(R.id.etAge);
         etGender = findViewById(R.id.etGender);
@@ -105,15 +105,12 @@ public class ProfileActivity extends AppCompatActivity {
 
                 runOnUiThread(() -> {
                     if (profile != null) {
-                        // FIX: Added text generation for the View Mode Card
-                        String info = "Name: " + profile.getName() +
-                                "\nAge: " + profile.getAge() +
-                                "\nGender: " + profile.getGender() +
-                                "\nHeight: " + profile.getHeight() + " cm" +
-                                "\nWeight: " + profile.getWeight() + " kg";
-                        tvViewDetails.setText(info);
+                        tvUserName.setText(profile.getName());
+                        tvUserGender.setText(profile.getGender());
+                        tvUserAge.setText(String.valueOf(profile.getAge()));
+                        tvUserHeight.setText(String.valueOf(profile.getHeight()));
+                        tvUserWeight.setText(String.valueOf(profile.getWeight()));
 
-                        // Populates the editable fields
                         etName.setText(profile.getName());
                         etAge.setText(String.valueOf(profile.getAge()));
                         etGender.setText(profile.getGender());
@@ -130,7 +127,6 @@ public class ProfileActivity extends AppCompatActivity {
         String ageStr = etAge.getText().toString().trim();
         String gender = etGender.getText().toString().trim();
         String heightStr = etHeight.getText().toString().trim();
-        // FIX: Extract the weight string properly from the UI
         String weightStr = etWeight.getText().toString().trim();
 
         if (name.isEmpty() || ageStr.isEmpty() || heightStr.isEmpty() || weightStr.isEmpty()) {

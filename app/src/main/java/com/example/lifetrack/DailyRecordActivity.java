@@ -1,6 +1,7 @@
 package com.example.lifetrack;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.lifetrack.data.entity.AppDatabase;
 import com.example.lifetrack.data.entity.DailyHealthRecord;
+import com.example.lifetrack.data.entity.UserProfile;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,7 +27,7 @@ import java.util.concurrent.Executors;
 public class DailyRecordActivity extends AppCompatActivity {
 
     Spinner spinnerIntensity;
-    EditText etExerciseMinutes, etSleepHours, etCalories;
+    EditText etExerciseMinutes, etSleepHours;
     RadioGroup rgFoodType;
     RadioButton rbHealthy, rbNormal, rbUnhealthy;
     Button btnSaveDailyRecord, btnBackToMain;
@@ -36,12 +38,10 @@ public class DailyRecordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_daily_record);
 
-        // Hide Action Bar for clean UI
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
 
-        // Initialize UI Elements
         etExerciseMinutes = findViewById(R.id.etExerciseMinutes);
         etSleepHours = findViewById(R.id.etSleepHours);
         rgFoodType = findViewById(R.id.rgFoodType);
@@ -49,22 +49,19 @@ public class DailyRecordActivity extends AppCompatActivity {
         rbNormal = findViewById(R.id.rbNormal);
         rbUnhealthy = findViewById(R.id.rbUnhealthy);
         spinnerIntensity = findViewById(R.id.spinnerIntensity);
-        etCalories = findViewById(R.id.etCalories);
         btnSaveDailyRecord = findViewById(R.id.btnSaveDailyRecord);
-        btnBackToMain = findViewById(R.id.btnBackToMain); // "Cancel" button
+        btnBackToMain = findViewById(R.id.btnBackToMain);
 
         db = AppDatabase.getInstance(this);
 
         String[] levels = {"Low", "Medium", "High"};
-
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_dropdown_item,
                 levels
         );
-
         spinnerIntensity.setAdapter(adapter);
-        // --- GLOBAL NAVIGATION FOOTER ---
+
         LinearLayout navHome = findViewById(R.id.navHome);
         LinearLayout navCalendar = findViewById(R.id.navCalendar);
         LinearLayout navProfile = findViewById(R.id.navProfile);
@@ -73,31 +70,17 @@ public class DailyRecordActivity extends AppCompatActivity {
         navCalendar.setOnClickListener(v -> navigateTo(RecordHistoryActivity.class));
         navProfile.setOnClickListener(v -> navigateTo(ProfileActivity.class));
 
-        // --- SECONDARY ACTION: CANCEL ---
         btnBackToMain.setOnClickListener(v -> navigateTo(MainActivity.class));
-
-        // --- PRIMARY ACTION: SAVE RECORD ---
         btnSaveDailyRecord.setOnClickListener(v -> saveRecord());
     }
 
     private void saveRecord() {
-
         String exerciseStr = etExerciseMinutes.getText().toString().trim();
         String sleepStr = etSleepHours.getText().toString().trim();
-
-        // ⭐ NEW: get intensity + calories
         String intensity = spinnerIntensity.getSelectedItem().toString();
 
-        String caloriesStr = etCalories.getText().toString().trim();
-        int calories = caloriesStr.isEmpty() ? 0 : Integer.parseInt(caloriesStr);
-
-        // validation
-        if (exerciseStr.isEmpty() || sleepStr.isEmpty()
-                || rgFoodType.getCheckedRadioButtonId() == -1) {
-
-            Toast.makeText(this,
-                    "Please complete your check-in so we can analyze your day.",
-                    Toast.LENGTH_SHORT).show();
+        if (exerciseStr.isEmpty() || sleepStr.isEmpty() || rgFoodType.getCheckedRadioButtonId() == -1) {
+            Toast.makeText(this, "Please complete your check-in so we can analyze your day.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -105,35 +88,39 @@ public class DailyRecordActivity extends AppCompatActivity {
         float sleepHours = Float.parseFloat(sleepStr);
 
         String foodType;
-        if (rbHealthy.isChecked()) {
-            foodType = "Healthy";
-        } else if (rbNormal.isChecked()) {
-            foodType = "Normal";
-        } else {
-            foodType = "Unhealthy";
-        }
+        if (rbHealthy.isChecked()) foodType = "Healthy";
+        else if (rbNormal.isChecked()) foodType = "Normal";
+        else foodType = "Unhealthy";
 
-        String todayDate = new SimpleDateFormat("yyyy-MM-dd",
-                Locale.getDefault()).format(new Date());
+        String todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
         Executors.newSingleThreadExecutor().execute(() -> {
+            SharedPreferences prefs = getSharedPreferences("LifeTrackPrefs", MODE_PRIVATE);
+            String userEmail = prefs.getString("loggedInEmail", null);
+            float userWeight = 70.0f; // Default
+
+            if (userEmail != null) {
+                UserProfile profile = db.userProfileDao().getProfileByEmail(userEmail);
+                if (profile != null && profile.getWeight() > 0) {
+                    userWeight = profile.getWeight();
+                }
+            }
+
+            float metValue = 3.0f; // Low
+            if (intensity.equalsIgnoreCase("Medium")) metValue = 5.0f;
+            else if (intensity.equalsIgnoreCase("High")) metValue = 8.0f;
+
+            int calculatedCalories = Math.round(exerciseMinutes * (metValue * 3.5f * userWeight) / 200f);
 
             DailyHealthRecord record = new DailyHealthRecord(
-                    todayDate,
-                    exerciseMinutes,
-                    intensity,
-                    calories,
-                    sleepHours,
-                    foodType
+                    todayDate, exerciseMinutes, intensity, calculatedCalories, sleepHours, foodType
             );
 
             db.dailyHealthRecordDao().insert(record);
-            Log.d("TEST", "Saved: " + exerciseMinutes + " / " + sleepHours + " / " + foodType);
-            runOnUiThread(() -> {
-                Toast.makeText(this,
-                        "Daily check-in complete! Your insights are ready.",
-                        Toast.LENGTH_LONG).show();
+            Log.d("DailyRecord", "Saved calories: " + calculatedCalories + " kcal");
 
+            runOnUiThread(() -> {
+                Toast.makeText(this, "Daily check-in complete! Burned ~" + calculatedCalories + " kcal.", Toast.LENGTH_LONG).show();
                 navigateTo(MainActivity.class);
             });
         });
