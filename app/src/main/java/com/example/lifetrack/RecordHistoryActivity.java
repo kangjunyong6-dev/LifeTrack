@@ -25,7 +25,7 @@ public class RecordHistoryActivity extends AppCompatActivity {
     Button tabCalendar, tabStats, btnBackHistoryCal, btnBackHistoryStats;
     ScrollView containerCalendar, containerStats;
     CalendarView calendarView;
-    TextView tvSelectedDateStats, tvTotalTime, tvTotalDistance, tvCaloriesBurnt;
+    TextView tvSelectedDateStats, tvTotalTime, tvTotalDistance, tvCaloriesBurnt,tvAvgSleep, tvAvgExercise, tvAvgScore, tvTrend;;
     LinearLayout layoutHistoryContainer;
     List<DailyHealthRecord> allRecords;
 
@@ -45,6 +45,7 @@ public class RecordHistoryActivity extends AppCompatActivity {
         tvTotalTime = findViewById(R.id.tvTotalTime);
         tvTotalDistance = findViewById(R.id.tvTotalDistance);
         tvCaloriesBurnt = findViewById(R.id.tvCaloriesBurnt);
+        tvTrend = findViewById(R.id.tvTrend);
         layoutHistoryContainer = findViewById(R.id.layoutHistoryContainer);
 
         // Tab Switching Logic
@@ -111,7 +112,7 @@ public class RecordHistoryActivity extends AppCompatActivity {
         if (allRecords == null) return;
         for (DailyHealthRecord r : allRecords) {
             if (r.getDate().equals(targetDate)) {
-                tvSelectedDateStats.setText("Exercise: " + r.getExerciseMinutes() + " mins\nSleep: " + r.getSleepHours() + " hours\nFood: " + r.getFoodNote());
+                tvSelectedDateStats.setText("Exercise: " + r.getExerciseMinutes() + " mins(" + r.getExerciseIntensity() + "\n" + "Calories: " + r.getCalories() + " kcal\n" + "Sleep: " + r.getSleepHours() + " hours\nFood: " + r.getFoodNote());
                 return;
             }
         }
@@ -153,7 +154,8 @@ public class RecordHistoryActivity extends AppCompatActivity {
         for (int i = 0; i < count; i++) {
             DailyHealthRecord r = allRecords.get(i);
             TextView tv = new TextView(this);
-            tv.setText(r.getDate() + " - " + r.getExerciseMinutes() + " mins exercise");
+            tv.setText(r.getDate() + " - " + r.getExerciseMinutes() + " mins exercise " + r.getExerciseIntensity() + "), " +
+                    r.getCalories() + " kcal");
             tv.setPadding(0, 16, 0, 16);
             tv.setTextColor(Color.parseColor("#4A5568"));
             tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
@@ -212,5 +214,87 @@ public class RecordHistoryActivity extends AppCompatActivity {
             tabStats.setTypeface(null, android.graphics.Typeface.NORMAL);
         });
 
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadWeeklyStats(); //refresh data when returning to screen
+    }
+    private void loadWeeklyStats() {
+
+        AppDatabase db = AppDatabase.getInstance(this);
+
+        TextView tvAvgSleep = findViewById(R.id.tvAvgSleep);
+        TextView tvAvgExercise = findViewById(R.id.tvAvgExercise);
+        TextView tvAvgScore = findViewById(R.id.tvAvgScore);
+        TextView tvTrend = findViewById(R.id.tvTrend);
+
+        Executors.newSingleThreadExecutor().execute(() -> {
+
+            List<DailyHealthRecord> records =
+                    db.dailyHealthRecordDao().getLast7Records();
+
+            if (records == null || records.isEmpty()) {
+                runOnUiThread(() -> {
+                    tvAvgSleep.setText("No data");
+                    tvAvgExercise.setText("No data");
+                    tvAvgScore.setText("No data");
+                    tvTrend.setText("No data");
+                });
+                return;
+            }
+
+            float totalSleep = 0;
+            int totalExercise = 0;
+            int totalScore = 0;
+
+            for (DailyHealthRecord r : records) {
+                totalSleep += r.getSleepHours();
+                totalExercise += r.getExerciseMinutes();
+                totalScore += calculateScore(r);
+            }
+
+            int count = records.size();
+
+            float avgSleep = totalSleep / count;
+            int avgExercise = totalExercise / count;
+            int avgScore = totalScore / count;
+
+            runOnUiThread(() -> {
+                tvAvgSleep.setText(String.format("%.1f hrs", avgSleep));
+                tvAvgExercise.setText(avgExercise + " mins");
+                tvAvgScore.setText(String.valueOf(avgScore));
+                tvTrend.setText(getTrend(records));
+            });
+        });
+    }
+
+    private String getTrend(List<DailyHealthRecord> records) {
+        if (records.size() < 2) return "No trend";
+
+        int latest = calculateScore(records.get(0));
+        int previous = calculateScore(records.get(1));
+
+        if (latest > previous)
+            return "Your health is improving 📈 Keep it up!";
+        else if (latest < previous)
+            return "Your health is declining 📉 Try improving sleep & exercise.";
+        else
+            return "Your health is stable ➖ Maintain consistency.";
+    }
+
+    private int calculateScore(DailyHealthRecord r) {
+        int score = 50;
+
+        if (r.getSleepHours() >= 7) score += 20;
+        else if (r.getSleepHours() >= 5) score += 10;
+
+        if (r.getExerciseMinutes() >= 30) score += 20;
+        else if (r.getExerciseMinutes() >= 10) score += 10;
+
+        if ("Healthy".equalsIgnoreCase(r.getFoodNote())) score += 10;
+        else if ("Unhealthy".equalsIgnoreCase(r.getFoodNote())) score -= 10;
+
+        return Math.max(0, Math.min(score, 100));
     }
 }

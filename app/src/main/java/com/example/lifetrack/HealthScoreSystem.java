@@ -92,7 +92,7 @@ public class HealthScoreSystem extends AppCompatActivity {
                     });
                     return;
                 }
-                DailyHealthRecord latest = records.get(0);
+                DailyHealthRecord latest = db.dailyHealthRecordDao().getLatestRecord();
 
                 // Analyze using Supabase Function
                 apiRepository.getHealthAssessment(latest, new HealthRepository.ApiCallback() {
@@ -139,10 +139,19 @@ public class HealthScoreSystem extends AppCompatActivity {
         else tvStatus.setTextColor(Color.parseColor("#E53E3E"));
     }
 
-    private int calculateLocalFallback(DailyHealthRecord record) {
-        float score = (record.getSleepHours() * 7) + (record.getExerciseMinutes() / 2.5f);
-        if ("Healthy".equalsIgnoreCase(record.getFoodNote())) score += 15;
-        return (int) Math.min(score, 100);
+    private int calculateLocalFallback(DailyHealthRecord r) {
+        int score = 50;
+
+        if (r.getSleepHours() >= 7) score += 20;
+        else if (r.getSleepHours() >= 5) score += 10;
+
+        if (r.getExerciseMinutes() >= 30) score += 20;
+        else if (r.getExerciseMinutes() >= 10) score += 10;
+
+        if (r.getFoodNote().equalsIgnoreCase("Healthy")) score += 10;
+        else if (r.getFoodNote().equalsIgnoreCase("Unhealthy")) score -= 10;
+
+        return Math.max(0, Math.min(score, 100));
     }
 
     private void navigateTo(Class<?> target) {

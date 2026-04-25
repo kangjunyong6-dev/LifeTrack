@@ -27,7 +27,17 @@ public class LoginActivity extends AppCompatActivity {
         // 2. CHECK SESSION BEFORE LOADING UI
         checkExistingSession();
 
-        // 3. Normal UI Setup
+        // 3. Check Session to perform 1 time login
+        SharedPreferences prefs = getSharedPreferences("LifeTrackPrefs", MODE_PRIVATE);
+        boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
+
+        if (isLoggedIn) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+            return;
+        }
+
+        // 4. Normal UI Setup
         setContentView(R.layout.activity_login);
         if (getSupportActionBar() != null) getSupportActionBar().hide();
 
@@ -69,16 +79,21 @@ public class LoginActivity extends AppCompatActivity {
 
             runOnUiThread(() -> {
                 if (profile != null) {
-                    // SUCCESS: Save the exact email to the session
-                    android.content.SharedPreferences prefs = getSharedPreferences("LifeTrackPrefs", MODE_PRIVATE);
-                    prefs.edit().putString("loggedInEmail", email).apply();
+
+                    SharedPreferences prefs = getSharedPreferences("LifeTrackPrefs", MODE_PRIVATE);
+
+                    prefs.edit()
+                            .putBoolean("isLoggedIn", true)
+                            .putString("loggedInEmail", email)
+                            .apply();
 
                     Intent intent = new Intent(this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     finish();
+
                 } else {
-                    etEmail.setError("Account not found");
+                    Toast.makeText(this, "Account not found", Toast.LENGTH_SHORT).show();
                 }
             });
         });

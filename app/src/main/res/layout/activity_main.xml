@@ -46,6 +46,111 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="32dp" />
 
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardHealthScore"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="10dp"
+                app:cardBackgroundColor="#4CAF50">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="20dp"
+                    android:orientation="vertical">
+
+                    <!-- Title -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Health Score"
+                        android:textColor="#000000"
+                        android:textSize="16sp"/>
+
+                    <!-- Score -->
+                    <TextView
+                        android:id="@+id/tvScore"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="#000000"
+                        android:textSize="36sp"
+                        android:textStyle="bold"/>
+
+                    <!-- Status -->
+                    <TextView
+                        android:id="@+id/tvStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Status"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        android:textSize="14sp"/>
+
+                    <!-- Advice -->
+                    <TextView
+                        android:id="@+id/tvAdvice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Advice will appear here"
+                        android:textColor="#000000"
+                        android:textSize="14sp"
+                        android:layout_marginTop="8dp"/>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardInsights"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:padding="20dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="8dp"
+                app:strokeColor="#E2E8F0"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Title -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Health Insights"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:textColor="#2D3748"/>
+
+                    <!-- Chart -->
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/homeChart"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_marginTop="12dp"/>
+
+                    <!-- Prediction -->
+                    <TextView
+                        android:id="@+id/tvPrediction"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="AI Insight: --"
+                        android:textSize="15sp"
+                        android:layout_marginTop="12dp"
+                        android:textColor="#4A5568"/>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardDailyLog"
                 android:layout_width="match_parent"

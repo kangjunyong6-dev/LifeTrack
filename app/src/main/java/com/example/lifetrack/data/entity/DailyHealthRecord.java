@@ -11,6 +11,8 @@ public class DailyHealthRecord {
 
     private String date;
     private int exerciseMinutes;
+    private String exerciseIntensity;
+    private int calories;
     private float sleepHours;
     private String foodNote;
 
@@ -18,9 +20,11 @@ public class DailyHealthRecord {
     private int calorieIntake;
 
     // This constructor exactly matches what your teammate wrote in DailyRecordActivity.java
-    public DailyHealthRecord(String date, int exerciseMinutes, float sleepHours, String foodNote) {
+    public DailyHealthRecord(String date, int exerciseMinutes, String exerciseIntensity, int calories,float sleepHours, String foodNote) {
         this.date = date;
         this.exerciseMinutes = exerciseMinutes;
+        this.exerciseIntensity = exerciseIntensity;
+        this.calories = calories;
         this.sleepHours = sleepHours;
         this.foodNote = foodNote;
 
@@ -76,6 +80,14 @@ public class DailyHealthRecord {
 
     public void setCalorieIntake(int calorieIntake) {
         this.calorieIntake = calorieIntake;
+    }
+
+    public String getExerciseIntensity() {
+        return exerciseIntensity;
+    }
+
+    public int getCalories() {
+        return calories;
     }
 
     public int calculateLocalScore() {

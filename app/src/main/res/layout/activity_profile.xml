@@ -107,7 +107,7 @@
                                 android:id="@+id/etName"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="Email Address"
+                                android:hint="Name"
                                 android:paddingHorizontal="16dp" />
                         </com.google.android.material.textfield.TextInputLayout>
 

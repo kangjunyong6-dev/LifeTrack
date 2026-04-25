@@ -16,16 +16,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Create Account"
-            android:textSize="28sp"
+            android:textSize="32sp"
             android:textStyle="bold"
-            android:textColor="#1A202C"
-            android:layout_marginBottom="24dp" />
+            android:textColor="#1A202C" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Please fill in your details to continue."
+            android:textSize="14sp"
+            android:textColor="#718096"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="32dp" />
 
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:boxBackgroundColor="#FFFFFF">
+            android:layout_marginBottom="16dp"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp">
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etSignUpName"
                 android:layout_width="match_parent"
@@ -35,10 +48,15 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:boxBackgroundColor="#FFFFFF">
+            android:layout_marginBottom="16dp"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp">
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etSignUpEmail"
                 android:layout_width="match_parent"
@@ -48,11 +66,16 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:passwordToggleEnabled="true"
-            app:boxBackgroundColor="#FFFFFF">
+            android:layout_marginBottom="16dp"
+            app:endIconMode="password_toggle"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp">
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etSignUpPassword"
                 android:layout_width="match_parent"
@@ -65,28 +88,39 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="16dp"
+            android:baselineAligned="false">
 
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
-                app:boxBackgroundColor="#FFFFFF">
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etSignUpAge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Age (5-100)"
+                    android:hint="Age"
                     android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:boxBackgroundColor="#FFFFFF">
+                android:layout_marginStart="8dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp">
+
                 <AutoCompleteTextView
                     android:id="@+id/etSignUpGender"
                     android:layout_width="match_parent"
@@ -100,14 +134,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="24dp">
+            android:layout_marginBottom="32dp"
+            android:baselineAligned="false">
 
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
-                app:boxBackgroundColor="#FFFFFF">
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etSignUpHeight"
                     android:layout_width="match_parent"
@@ -117,10 +157,16 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:boxBackgroundColor="#FFFFFF">
+                android:layout_marginStart="8dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etSignUpWeight"
                     android:layout_width="match_parent"
@@ -130,14 +176,22 @@
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
         <Button
             android:id="@+id/btnRegister"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="56dp"
             android:text="Sign Up"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:textStyle="bold"
             app:backgroundTint="#4299E1"
             app:cornerRadius="12dp"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="24dp" />
 
         <TextView
             android:id="@+id/tvBackToLogin"
@@ -146,6 +200,7 @@
             android:text="Already have an account? Login"
             android:textColor="#4299E1"
             android:layout_gravity="center"
+            android:padding="8dp"
             android:textStyle="bold" />
     </LinearLayout>
 </ScrollView>

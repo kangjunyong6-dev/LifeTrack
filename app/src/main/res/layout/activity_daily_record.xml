@@ -92,6 +92,31 @@
                         android:background="#F1F3F4"
                         android:paddingHorizontal="16dp"
                         android:layout_marginBottom="24dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Exercise Intensity"
+                        android:textStyle="bold"
+                        android:layout_marginTop="16dp"/>
+
+                    <Spinner
+                        android:id="@+id/spinnerIntensity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Calories Burned"
+                        android:textStyle="bold"/>
+
+                    <EditText
+                        android:id="@+id/etCalories"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter calories (kcal)"
+                        android:inputType="number"/>
 
                     <TextView
                         android:layout_width="wrap_content"

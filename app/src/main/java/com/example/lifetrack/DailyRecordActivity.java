@@ -2,11 +2,14 @@ package com.example.lifetrack;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,7 +24,8 @@ import java.util.concurrent.Executors;
 
 public class DailyRecordActivity extends AppCompatActivity {
 
-    EditText etExerciseMinutes, etSleepHours;
+    Spinner spinnerIntensity;
+    EditText etExerciseMinutes, etSleepHours, etCalories;
     RadioGroup rgFoodType;
     RadioButton rbHealthy, rbNormal, rbUnhealthy;
     Button btnSaveDailyRecord, btnBackToMain;
@@ -44,11 +48,22 @@ public class DailyRecordActivity extends AppCompatActivity {
         rbHealthy = findViewById(R.id.rbHealthy);
         rbNormal = findViewById(R.id.rbNormal);
         rbUnhealthy = findViewById(R.id.rbUnhealthy);
+        spinnerIntensity = findViewById(R.id.spinnerIntensity);
+        etCalories = findViewById(R.id.etCalories);
         btnSaveDailyRecord = findViewById(R.id.btnSaveDailyRecord);
         btnBackToMain = findViewById(R.id.btnBackToMain); // "Cancel" button
 
         db = AppDatabase.getInstance(this);
 
+        String[] levels = {"Low", "Medium", "High"};
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_dropdown_item,
+                levels
+        );
+
+        spinnerIntensity.setAdapter(adapter);
         // --- GLOBAL NAVIGATION FOOTER ---
         LinearLayout navHome = findViewById(R.id.navHome);
         LinearLayout navCalendar = findViewById(R.id.navCalendar);
@@ -66,11 +81,23 @@ public class DailyRecordActivity extends AppCompatActivity {
     }
 
     private void saveRecord() {
+
         String exerciseStr = etExerciseMinutes.getText().toString().trim();
         String sleepStr = etSleepHours.getText().toString().trim();
 
-        if (exerciseStr.isEmpty() || sleepStr.isEmpty() || rgFoodType.getCheckedRadioButtonId() == -1) {
-            Toast.makeText(this, "Please complete your check-in so we can analyze your day.", Toast.LENGTH_SHORT).show();
+        // ⭐ NEW: get intensity + calories
+        String intensity = spinnerIntensity.getSelectedItem().toString();
+
+        String caloriesStr = etCalories.getText().toString().trim();
+        int calories = caloriesStr.isEmpty() ? 0 : Integer.parseInt(caloriesStr);
+
+        // validation
+        if (exerciseStr.isEmpty() || sleepStr.isEmpty()
+                || rgFoodType.getCheckedRadioButtonId() == -1) {
+
+            Toast.makeText(this,
+                    "Please complete your check-in so we can analyze your day.",
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -79,33 +106,39 @@ public class DailyRecordActivity extends AppCompatActivity {
 
         String foodType;
         if (rbHealthy.isChecked()) {
-            foodType = "Healthy"; // Displays as Nourishing
+            foodType = "Healthy";
         } else if (rbNormal.isChecked()) {
-            foodType = "Normal";  // Displays as Balanced
+            foodType = "Normal";
         } else {
-            foodType = "Unhealthy"; // Displays as Treat/Heavy
+            foodType = "Unhealthy";
         }
 
-        String todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        String todayDate = new SimpleDateFormat("yyyy-MM-dd",
+                Locale.getDefault()).format(new Date());
 
         Executors.newSingleThreadExecutor().execute(() -> {
+
             DailyHealthRecord record = new DailyHealthRecord(
                     todayDate,
                     exerciseMinutes,
+                    intensity,
+                    calories,
                     sleepHours,
                     foodType
             );
 
             db.dailyHealthRecordDao().insert(record);
-
+            Log.d("TEST", "Saved: " + exerciseMinutes + " / " + sleepHours + " / " + foodType);
             runOnUiThread(() -> {
-                Toast.makeText(this, "Daily check-in complete! Your insights are ready.", Toast.LENGTH_LONG).show();
-                navigateTo(MainActivity.class); // Auto-return to dashboard after saving
+                Toast.makeText(this,
+                        "Daily check-in complete! Your insights are ready.",
+                        Toast.LENGTH_LONG).show();
+
+                navigateTo(MainActivity.class);
             });
         });
     }
 
-    // Helper for clean navigation
     private void navigateTo(Class<?> targetClass) {
         Intent intent = new Intent(this, targetClass);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
