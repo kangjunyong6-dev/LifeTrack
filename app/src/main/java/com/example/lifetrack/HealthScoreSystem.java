@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,13 +16,12 @@ import com.example.lifetrack.api.HealthRepository;
 import com.example.lifetrack.data.entity.AppDatabase;
 import com.example.lifetrack.data.entity.DailyHealthRecord;
 
-import java.util.List;
 import java.util.concurrent.Executors;
 
 public class HealthScoreSystem extends AppCompatActivity {
 
     private Button btnAnalyze, btnBackToDashboard;
-    private TextView tvScore, tvStatus, tvAdvice;
+    private TextView tvScore, tvStatus, tvAdvice, tvReportTitle;
     private LinearLayout navHome, navCalendar, navProfile;
 
     private HealthRepository apiRepository;
@@ -60,6 +58,7 @@ public class HealthScoreSystem extends AppCompatActivity {
         tvScore = findViewById(R.id.tvScore);
         tvStatus = findViewById(R.id.tvStatus);
         tvAdvice = findViewById(R.id.tvAdvice);
+        tvReportTitle = findViewById(R.id.tvReportTitle); // NEW: Title element
 
         navHome = findViewById(R.id.navHome);
         navCalendar = findViewById(R.id.navCalendar);
@@ -76,40 +75,44 @@ public class HealthScoreSystem extends AppCompatActivity {
     }
 
     private void triggerSmartAnalysis() {
-        tvStatus.setText("Syncing...");
-        tvAdvice.setText("Connecting to Supabase Cloud...");
+        tvStatus.setText("Checking Database...");
+        tvAdvice.setText("Please wait while we process your daily metrics.");
         btnAnalyze.setEnabled(false);
 
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
-                // Get the latest local record
-                List<DailyHealthRecord> records = db.dailyHealthRecordDao().getAllRecords();
-                if (records == null || records.isEmpty()) {
+                DailyHealthRecord latest = db.dailyHealthRecordDao().getLatestRecord();
+
+                if (latest == null) {
                     runOnUiThread(() -> {
                         btnAnalyze.setEnabled(true);
-                        tvStatus.setText("No Data");
+                        tvStatus.setText("No Data Found");
                         tvAdvice.setText("Please record your health data first.");
                     });
                     return;
                 }
-                DailyHealthRecord latest = db.dailyHealthRecordDao().getLatestRecord();
 
-                // Analyze using Supabase Function
                 apiRepository.getHealthAssessment(latest, new HealthRepository.ApiCallback() {
                     @Override
-                    public void onSuccess(HealthAssessmentResponse result) {
+                    public void onSuccess(HealthAssessmentResponse result, String source) {
                         runOnUiThread(() -> {
-                            if (result != null && !isFinishing()) {
+                            if (!isFinishing()) {
+                                // Update the title to show Offline/Cloud
+                                tvReportTitle.setText(source.toUpperCase());
                                 updateResultUI(result.getHealthScore(), result.getClassification(), result.getTrendAnalysis());
-                            } else {
-                                handleFallback(latest, "Success but empty response.");
                             }
                         });
                     }
 
+
+
                     @Override
                     public void onError(String error) {
-                        runOnUiThread(() -> handleFallback(latest, "Cloud unreachable: " + error));
+                        runOnUiThread(() -> {
+                            btnAnalyze.setEnabled(true);
+                            tvStatus.setText("System Error");
+                            tvAdvice.setText(error);
+                        });
                     }
                 });
             } catch (Exception e) {
@@ -121,37 +124,22 @@ public class HealthScoreSystem extends AppCompatActivity {
         });
     }
 
-    private void handleFallback(DailyHealthRecord record, String reason) {
-        if (isFinishing()) return;
-        int score = calculateLocalFallback(record);
-        updateResultUI(score, "Moderate (Offline)", "Showing local assessment. Reason: " + reason);
-        Toast.makeText(this, "Operating in Offline Mode", Toast.LENGTH_SHORT).show();
-    }
-
     private void updateResultUI(int score, String status, String advice) {
         btnAnalyze.setEnabled(true);
         tvScore.setText(String.valueOf(score));
-        tvStatus.setText(status);
         tvAdvice.setText(advice);
 
-        if (score >= 80) tvStatus.setTextColor(Color.parseColor("#38A169"));
-        else if (score >= 50) tvStatus.setTextColor(Color.parseColor("#D69E2E"));
-        else tvStatus.setTextColor(Color.parseColor("#E53E3E"));
-    }
-
-    private int calculateLocalFallback(DailyHealthRecord r) {
-        int score = 50;
-
-        if (r.getSleepHours() >= 7) score += 20;
-        else if (r.getSleepHours() >= 5) score += 10;
-
-        if (r.getExerciseMinutes() >= 30) score += 20;
-        else if (r.getExerciseMinutes() >= 10) score += 10;
-
-        if (r.getFoodNote().equalsIgnoreCase("Healthy")) score += 10;
-        else if (r.getFoodNote().equalsIgnoreCase("Unhealthy")) score -= 10;
-
-        return Math.max(0, Math.min(score, 100));
+        // Styling based on score brackets
+        if (score >= 80) {
+            tvStatus.setTextColor(Color.parseColor("#38A169"));
+            tvStatus.setText("● Healthy Status");
+        } else if (score >= 50) {
+            tvStatus.setTextColor(Color.parseColor("#D69E2E"));
+            tvStatus.setText("● Moderate Status");
+        } else {
+            tvStatus.setTextColor(Color.parseColor("#E53E3E"));
+            tvStatus.setText("● Unhealthy Status");
+        }
     }
 
     private void navigateTo(Class<?> target) {

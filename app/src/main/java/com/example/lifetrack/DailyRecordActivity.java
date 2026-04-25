@@ -77,27 +77,30 @@ public class DailyRecordActivity extends AppCompatActivity {
     private void saveRecord() {
         String exerciseStr = etExerciseMinutes.getText().toString().trim();
         String sleepStr = etSleepHours.getText().toString().trim();
-        String intensity = spinnerIntensity.getSelectedItem().toString();
+        String intensity = spinnerIntensity.getSelectedItem() != null ? spinnerIntensity.getSelectedItem().toString() : "Low";
 
-        if (exerciseStr.isEmpty() || sleepStr.isEmpty() || rgFoodType.getCheckedRadioButtonId() == -1) {
-            Toast.makeText(this, "Please complete your check-in so we can analyze your day.", Toast.LENGTH_SHORT).show();
+        if (exerciseStr.isEmpty()) {
+            Toast.makeText(this, "Please enter your exercise minutes.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        int exerciseMinutes = Integer.parseInt(exerciseStr);
-        float sleepHours = Float.parseFloat(sleepStr);
+        // Variables made final so they can be accessed inside the lambda
+        final int exerciseMinutes = Integer.parseInt(exerciseStr);
+        final float sleepHours = sleepStr.isEmpty() ? 0.0f : Float.parseFloat(sleepStr);
 
-        String foodType;
-        if (rbHealthy.isChecked()) foodType = "Healthy";
-        else if (rbNormal.isChecked()) foodType = "Normal";
-        else foodType = "Unhealthy";
+        String foodTypeTemp = "Normal";
+        if (rgFoodType.getCheckedRadioButtonId() != -1) {
+            if (rbHealthy.isChecked()) foodTypeTemp = "Healthy";
+            else if (rbUnhealthy.isChecked()) foodTypeTemp = "Unhealthy";
+        }
+        final String foodType = foodTypeTemp;
 
-        String todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        final String todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
         Executors.newSingleThreadExecutor().execute(() -> {
             SharedPreferences prefs = getSharedPreferences("LifeTrackPrefs", MODE_PRIVATE);
             String userEmail = prefs.getString("loggedInEmail", null);
-            float userWeight = 70.0f; // Default
+            float userWeight = 70.0f;
 
             if (userEmail != null) {
                 UserProfile profile = db.userProfileDao().getProfileByEmail(userEmail);
@@ -106,21 +109,22 @@ public class DailyRecordActivity extends AppCompatActivity {
                 }
             }
 
-            float metValue = 3.0f; // Low
+            float metValue = 3.0f;
             if (intensity.equalsIgnoreCase("Medium")) metValue = 5.0f;
             else if (intensity.equalsIgnoreCase("High")) metValue = 8.0f;
 
-            int calculatedCalories = Math.round(exerciseMinutes * (metValue * 3.5f * userWeight) / 200f);
+            // Result made final to fix the compilation error
+            final int finalCalculatedCalories = Math.round(exerciseMinutes * (metValue * 3.5f * userWeight) / 200f);
 
             DailyHealthRecord record = new DailyHealthRecord(
-                    todayDate, exerciseMinutes, intensity, calculatedCalories, sleepHours, foodType
+                    todayDate, exerciseMinutes, intensity, finalCalculatedCalories, sleepHours, foodType
             );
 
             db.dailyHealthRecordDao().insert(record);
-            Log.d("DailyRecord", "Saved calories: " + calculatedCalories + " kcal");
+            Log.d("DailyRecord", "Saved calories: " + finalCalculatedCalories + " kcal");
 
             runOnUiThread(() -> {
-                Toast.makeText(this, "Daily check-in complete! Burned ~" + calculatedCalories + " kcal.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Check-in complete! Burned ~" + finalCalculatedCalories + " kcal.", Toast.LENGTH_LONG).show();
                 navigateTo(MainActivity.class);
             });
         });

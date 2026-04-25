@@ -10,31 +10,17 @@ public class HealthAssessmentResponse {
     @SerializedName("classification")
     private String classification;
 
-    @SerializedName("trendAnalysis")
+    @SerializedName("trendResult")
     private String trendAnalysis;
 
-    // Getters and Setters
-    public int getHealthScore() {
-        return healthScore;
-    }
 
-    public void setHealthScore(int healthScore) {
+    public HealthAssessmentResponse(String date, int healthScore, String classification, String trendAnalysis) {
         this.healthScore = healthScore;
-    }
-
-    public String getClassification() {
-        return classification;
-    }
-
-    public void setClassification(String classification) {
         this.classification = classification;
-    }
-
-    public String getTrendAnalysis() {
-        return trendAnalysis;
-    }
-
-    public void setTrendAnalysis(String trendAnalysis) {
         this.trendAnalysis = trendAnalysis;
     }
+
+    public int getHealthScore() { return healthScore; }
+    public String getClassification() { return classification; }
+    public String getTrendAnalysis() { return trendAnalysis; }
 }

@@ -4,78 +4,80 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F4F7FC"
-    android:fitsSystemWindows="true"> <LinearLayout
-    android:id="@+id/bottomNavBar"
-    android:layout_width="match_parent"
-    android:layout_height="65dp"
-    android:layout_alignParentBottom="true"
-    android:background="#FFFFFF"
-    android:orientation="horizontal"
-    android:elevation="12dp">
+    android:fitsSystemWindows="true">
 
     <LinearLayout
-        android:id="@+id/navHome"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:background="?android:attr/selectableItemBackground">
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@android:drawable/ic_menu_view"
-            app:tint="#A0AEC0" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Home"
-            android:textSize="12sp"
-            android:textColor="#A0AEC0" />
-    </LinearLayout>
+        android:id="@+id/bottomNavBar"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_alignParentBottom="true"
+        android:background="#FFFFFF"
+        android:orientation="horizontal"
+        android:elevation="12dp">
 
-    <LinearLayout
-        android:id="@+id/navCalendar"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:background="?android:attr/selectableItemBackground">
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@android:drawable/ic_menu_today"
-            app:tint="#A0AEC0" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Calendar"
-            android:textSize="12sp"
-            android:textColor="#A0AEC0" />
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="?android:attr/selectableItemBackground">
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@android:drawable/ic_menu_view"
+                app:tint="#A0AEC0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Home"
+                android:textSize="12sp"
+                android:textColor="#A0AEC0" />
+        </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/navProfile"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:background="?android:attr/selectableItemBackground">
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@android:drawable/ic_menu_myplaces"
-            app:tint="#A0AEC0" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Profile"
-            android:textSize="12sp"
-            android:textColor="#A0AEC0" />
+        <LinearLayout
+            android:id="@+id/navCalendar"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="?android:attr/selectableItemBackground">
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@android:drawable/ic_menu_today"
+                app:tint="#A0AEC0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Calendar"
+                android:textSize="12sp"
+                android:textColor="#A0AEC0" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/navProfile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="?android:attr/selectableItemBackground">
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@android:drawable/ic_menu_myplaces"
+                app:tint="#A0AEC0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Profile"
+                android:textSize="12sp"
+                android:textColor="#A0AEC0" />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -172,9 +174,9 @@
                         android:id="@+id/tvReportTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="AI WELLNESS REPORT"
+                        android:text="AWAITING DATA..."
                         android:textSize="12sp"
-                        android:textColor="#A0AEC0"
+                        android:textColor="#4299E1"
                         android:textStyle="bold"
                         android:letterSpacing="0.1"
                         android:layout_marginBottom="16dp" />
@@ -192,7 +194,7 @@
                         android:id="@+id/tvStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Awaiting Analysis"
+                        android:text="Press Analyze"
                         android:textSize="22sp"
                         android:textStyle="bold"
                         android:textColor="#4A5568"
@@ -208,7 +210,7 @@
                         android:id="@+id/tvAdvice"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Tap the button above to let our AI review your daily activity."
+                        android:text="Tap the button above to let the system review your daily activity."
                         android:textColor="#718096"
                         android:textSize="16sp"
                         android:lineSpacingExtra="6dp"
