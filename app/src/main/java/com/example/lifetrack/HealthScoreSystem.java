@@ -153,7 +153,7 @@ public class HealthScoreSystem extends AppCompatActivity {
         tvAdvice.setText("Your daily summary is ready.");
 
         String formattedAiAdvice = "✨ AI Insight:\n" + advice +
-                "\n\nConsistency is key, Jophy. Keep pushing!";
+                "\n\nConsistency is key, Keep pushing!";
         tvAiGuidance.setText(formattedAiAdvice);
 
         if (score >= 80) {
